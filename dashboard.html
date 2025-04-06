@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/css/bootstrap.min.css"/>strap/5.3.0-alpha1/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2 class="text-center text-primary">Welcome to Your Dashboard</h2>
+
+  <div class="card shadow p-4 mt-4">
+    <h3>Your Diagnosis History:</h3>
+    <table class="table" id="diagnosisTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Symptoms</th>
+          <th>Diagnosis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows inserted dynamically -->
+      </tbody>
+    </table>
+    <div class="text-center">
+      <button onclick="clearDiagnoses()" class="btn btn-danger mt-2">Clear History</button> History</button>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h3>Enter Your Symptoms</h3>
+    <form id="diagnosisForm">
+      <div class="mb-3">
+        <label for="symptoms" class="form-label">Symptoms:</label>
+        <input type="text" id="symptoms" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit Symptoms</button>n>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Function to display stored diagnoses
+  function displayDiagnoses() {
+    const diagnoses = JSON.parse(localStorage.getItem("diagnoses")) || [];
+    const tableBody = document.querySelector("#diagnosisTable tbody");
+    tableBody.innerHTML = ""; // Clear previous rows
+
+    diagnoses.forEach(entry => {
+      const row = tableBody.insertRow();
+      row.insertCell(0).textContent = entry.date;
+      row.insertCell(1).textContent = entry.symptoms;
+      row.insertCell(2).textContent = entry.diagnosis;
+    });
+  }
+
+  // Function to clear localStorage
+  function clearDiagnoses() {
+    localStorage.removeItem("diagnoses");
+    displayDiagnoses();
+  }
+
+  // Function to handle form submission
+  document.getElementById("diagnosisForm").addEventListener("submit", function (e) {tion (e) {
+    e.preventDefault();
+    const symptoms = document.getElementById("symptoms").value.toLowerCase();();
+
+    // Simple rule-based diagnosis
+    let diagnosis = "Unknown - Needs further analysis";
+    if (symptoms.includes("fever") && symptoms.includes("headache")) {
+      diagnosis = "Dengue";
+    } else if (symptoms.includes("fever") && symptoms.includes("rash")) {
+      diagnosis = "Measles";
+    } else if (symptoms.includes("fever") && symptoms.includes("cough")) {
+      diagnosis = "Flu";
+    } else if (symptoms.includes("chest pain")) {
+      diagnosis = "Possible Heart Issue";
+    } else if (symptoms.includes("fever")) {
+      diagnosis = "Viral Infection";
+    }
+
+    const newEntry = {
+      date: new Date().toLocaleString(),
+      symptoms,
+      diagnosis,
+    };
+
+    const diagnoses = JSON.parse(localStorage.getItem("diagnoses")) || [];
+    diagnoses.push(newEntry);
+    localStorage.setItem("diagnoses", JSON.stringify(diagnoses));
+
+    displayDiagnoses();
+    document.getElementById("symptoms").value = "";
+  });
+
+  // Load diagnoses on page load
+  displayDiagnoses();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0-alpha1/js/bootstrap.bundle.min.js"></script>/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
